@@ -219,6 +219,78 @@ def aliasthread():
         aliasStartCounting = time.time()
 
 
+def shaethread():
+    results = [0]
+    shaeFindValue = [0]
+    shaeLoc = [0]
+    shaepx = [0]
+    shaepy = [0]
+    global findShaeEvent, screenshot, shae, sx1, sx2, sy1, sy2, method, shaeSafeClick, lock, checkShae, shaeLogin, showShae, shaeStartCounting, shaeLogout
+
+    while True:
+        findShaeEvent.wait()
+        findShaeEvent.clear()
+        if shaeStartCounting != 0 and time.time() - shaeStartCounting > 300:
+            with lock:
+                pag.click(shaeSafeClick)
+                pag.keyDown('up')
+                time.sleep(0.3)
+                pag.click(shaeSafeClick)
+                pag.keyUp('up')
+            shaeStartCounting = time.time()
+        crop = screenshot[sy1:sy2, sx1:sx2]
+        #print("checking shae")
+        results[0] = cv2.matchTemplate(shae[0], crop, method)
+
+        _, shaeFindValue[0], _, shaeLoc[0] = cv2.minMaxLoc(results[0])
+
+        print("shae " + str(shaeFindValue))
+
+        counter = 0
+        bestresult = 0
+        if shaeFindValue[0] > 0.5:
+            counter += 1
+
+        if showShae is True:
+            cv2.imshow('s', crop)
+            cv2.waitKey(1)
+
+        if counter == 0:
+            continue
+        else:
+            px, py = shaeLoc[0]
+        print("shae found")
+        checkShae = False
+        time.sleep(0.5)
+        pag.click(sx1 + px + 30, sy1 + py + 30)
+        time.sleep(8)
+        with lock:
+            pag.click(shaeSafeClick)
+            pag.press('f')
+        ruch = bool(random.getrandbits(1))
+        if ruch is True:
+            time.sleep(2)
+            with lock:
+                pag.click(shaeSafeClick)
+                pag.keyDown('up')
+                time.sleep(0.3)
+                pag.click(shaeSafeClick)
+                pag.keyUp('up')
+        time.sleep(3 + random.randrange(11))
+        pag.click(shaeLogout)  # logout
+        time.sleep(360 + random.randrange(20))
+        try:
+            pag.click(shaeLogin)  # login
+        except:
+            img = pag.screenshot()
+            cv2.imwrite('/home/erl/Desktop/error1.png', img)
+            print("exception shae")
+        checkShae = True
+        print("look for shae")
+        makeSSEvent.set()
+        shaeStartCounting = time.time()
+
+
 ''''# 2560x1440  alias/firefox/lewo
 ax1 = 1920 + 250
 ax2 = 1920 + 650
@@ -259,11 +331,21 @@ razuLogout2 = (830, 430)
 razuLogin = (1150, 450)
 razuSafeClick = (1050, 155)
 
+sx1 = 100
+sx2 = 500
+sy1 = 300
+sy2 = 700
+shaeLogout = (685, 740)
+shaeLogin = (500, 425)
+shaeSafeClick = (350, 830)
+
 showAlias = False
 showRazu = False
+showShae = True
 
 razuStartCounting = 0
 aliasStartCounting = 0
+shaeStartCounting = 0
 
 alias = [cv2.imread('/home/erl/Desktop/Bot/1.png'), cv2.imread('/home/erl/Desktop/Bot/2.png'),
          cv2.imread('/home/erl/Desktop/Bot/3.png'), cv2.imread('/home/erl/Desktop/Bot/4.png'),
@@ -272,25 +354,33 @@ alias = [cv2.imread('/home/erl/Desktop/Bot/1.png'), cv2.imread('/home/erl/Deskto
 razu = [cv2.imread('/home/erl/Desktop/Bot/r.png'), cv2.imread('/home/erl/Desktop/Bot/e.png'),
         cv2.imread('/home/erl/Desktop/Bot/t.png')]
 
+shae = [cv2.imread('/Users/Jedrzej/Desktop/Bot/shae.png')]
+
 
 makeSSEvent = threading.Event()
 findAliasEvent = threading.Event()
 findRazuEvent = threading.Event()
+findShaeEvent = threading.Event()
+
 lock = threading.Lock()
 
-checkAlias = True
-checkRazu = True
+checkAlias = False
+checkRazu = False
+checkShae = True
 method = cv2.TM_CCOEFF_NORMED
 screenshot = 0
 
+shaeThread = threading.Thread(target=shaethread)
+shaeThread.start()
+
 aliasThread = threading.Thread(target=aliasthread)
-aliasThread.start()
+#aliasThread.start()
 
 razuThread = threading.Thread(target=razuthread)
-razuThread.start()
+#razuThread.start()
 
 while True:
-    if checkAlias is False and checkRazu is False:
+    if checkAlias is False and checkRazu is False and checkShae is False:
         makeSSEvent.wait()
         makeSSEvent.clear()
     screenshot = np.array(pag.screenshot())
@@ -300,4 +390,6 @@ while True:
         findAliasEvent.set()
     if checkRazu is True:
         findRazuEvent.set()
+    if checkShae is True:
+        findShaeEvent.set()
     time.sleep(1.5)
