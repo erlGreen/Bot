@@ -10,7 +10,9 @@ def razuthread():
     results = [0, 0, 0]
     razuFindValue = [0, 0, 0]
     razuLoc = [0, 0, 0]
-    global findRazuEvent, screenshot, razu, ax1, ax2, ay1, ay2, method, razuSafeClick, lock, checkRazu, razuLogin, showRazu, razuStartCounting, razuLogout, razuReload
+    razupx = [0, 0, 0]
+    razupy = [0, 0, 0]
+    global findRazuEvent, screenshot, razu, ax1, ax2, ay1, ay2, method, razuSafeClick, lock, checkRazu, razuLogin, showRazu, razuStartCounting, razuReload
 
     while True:
         findRazuEvent.wait()
@@ -21,7 +23,7 @@ def razuthread():
                 pag.keyDown('up')
                 time.sleep(0.3)
                 pag.keyUp('up')
-            pag.click(razuReload)
+                pag.click(razuReload)
             razuStartCounting = time.time()
         crop = screenshot[ry1:ry2, rx1:rx2]
         #print("checking razu")
@@ -33,6 +35,10 @@ def razuthread():
         _, razuFindValue[1], _, razuLoc[1] = cv2.minMaxLoc(results[1])
         _, razuFindValue[2], _, razuLoc[2] = cv2.minMaxLoc(results[2])
         #print("razu " + str(razuFindValue))
+
+        razupx[0], razupy[0] = razuLoc[0]
+        razupx[1], razupy[1] = razuLoc[1]
+        razupx[2], razupy[2] = razuLoc[2]
 
         counter = 0
         bestresult = 0
@@ -64,13 +70,13 @@ def razuthread():
 
         print("razu found")
         checkRazu = False
-        time.sleep(0.25)
-        pag.click(rx1 + px + 12, ry1 + py + 12)
-        for i in range(0, 6):
-            with lock:
-                pag.click(razuSafeClick)
-                pag.press('e')
-            time.sleep(0.25 + random.uniform(0.25, 0.75))
+        time.sleep(0.4)
+        with lock:
+            pag.click(rx1 + px + 12, ry1 + py + 20)
+        time.sleep(8)
+        with lock:
+            pag.click(razuSafeClick)
+            pag.press('f')
         ruch = bool(random.getrandbits(1))
         if ruch is True:
             time.sleep(2)
@@ -79,11 +85,15 @@ def razuthread():
                 pag.keyDown('up')
                 time.sleep(0.3)
                 pag.keyUp('up')
-        time.sleep(6 + random.randrange(2))
-        pag.click(razuLogout)  # logout
-        time.sleep(380 + random.randrange(20))
+        with lock:
+            pag.click(razuLogout1)  # logout
+        time.sleep(3 + random.randrange(4))
+        with lock:
+            pag.click(razuLogout2)  # logout
+        time.sleep(410 + random.randrange(10))
         try:
-            pag.click(razuLogin)  # login
+            with lock:
+                pag.click(razuLogin)  # login
         except:
             img = pag.screenshot()
             cv2.imwrite('/home/erl/Desktop/error2.png', img)  # login
@@ -98,7 +108,9 @@ def aliasthread():
     results = [0, 0, 0, 0, 0]
     aliasFindValue = [0, 0, 0, 0, 0]
     aliasLoc = [0, 0, 0, 0, 0]
-    global findAliasEvent, screenshot, alias, ax1, ax2, ay1, ay2, method, aliasSafeClick, lock, checkAlias, aliasLogin, showAlias, aliasStartCounting, aliasReload, aliasLogout
+    aliaspx = [0, 0, 0, 0, 0]
+    aliaspy = [0, 0, 0, 0, 0]
+    global findAliasEvent, screenshot, alias, ax1, ax2, ay1, ay2, method, aliasSafeClick, lock, checkAlias, aliasLogin, showAlias, aliasStartCounting, aliasReload
 
     while True:
         findAliasEvent.wait()
@@ -108,7 +120,6 @@ def aliasthread():
                 pag.click(aliasSafeClick)
                 pag.keyDown('up')
                 time.sleep(0.3)
-                pag.click(aliasSafeClick)
                 pag.keyUp('up')
                 pag.click(aliasReload)
             aliasStartCounting = time.time()
@@ -125,8 +136,13 @@ def aliasthread():
         _, aliasFindValue[2], _, aliasLoc[2] = cv2.minMaxLoc(results[2])
         _, aliasFindValue[3], _, aliasLoc[3] = cv2.minMaxLoc(results[3])
         _, aliasFindValue[4], _, aliasLoc[4] = cv2.minMaxLoc(results[4])
-        
-        print("alias " + str(aliasFindValue))
+        #print("alias " + str(aliasFindValue))
+
+        aliaspx[0], aliaspy[0] = aliasLoc[0]
+        aliaspx[1], aliaspy[1] = aliasLoc[1]
+        aliaspx[2], aliaspy[2] = aliasLoc[2]
+        aliaspx[3], aliaspy[3] = aliasLoc[3]
+        aliaspx[4], aliaspy[4] = aliasLoc[4]
 
         counter = 0
         bestresult = 0
@@ -169,13 +185,13 @@ def aliasthread():
             px, py = aliasLoc[4]
         print("alias found")
         checkAlias = False
-        time.sleep(0.25)
-        pag.click(ax1 + px + 12, ay1 + py + 12)
-        for i in range(0, 6):
-            with lock:
-                pag.click(aliasSafeClick)
-                pag.press('e')
-            time.sleep(0.25 + random.uniform(0.25, 0.75))
+        time.sleep(0.4)
+        with lock:
+            pag.click(ax1 + px + 6, ay1 + py + 20)
+        time.sleep(8)
+        with lock:
+            pag.click(aliasSafeClick)
+            pag.press('f')
         ruch = bool(random.getrandbits(1))
         if ruch is True:
             time.sleep(2)
@@ -184,11 +200,15 @@ def aliasthread():
                 pag.keyDown('up')
                 time.sleep(0.3)
                 pag.keyUp('up')
-        time.sleep(6 + random.randrange(2))
-        pag.click(aliasLogout)  # logout
-        time.sleep(380 + random.randrange(20))
+        with lock:
+            pag.click(aliasLogout1)  # logout
+        time.sleep(3 + random.randrange(4))
+        with lock:
+            pag.click(aliasLogout2)  # logout
+        time.sleep(410 + random.randrange(10))
         try:
-            pag.click(aliasLogin)  # login
+            with lock:
+                pag.click(aliasLogin)  # login
         except:
             img = pag.screenshot()
             cv2.imwrite('/home/erl/Desktop/error1.png', img)
@@ -199,75 +219,11 @@ def aliasthread():
         aliasStartCounting = time.time()
 
 
-def shaethread():
-    results = [0]
-    shaeFindValue = [0]
-    shaeLoc = [0]
-    global findShaeEvent, screenshot, shae, sx1, sx2, sy1, sy2, method, shaeSafeClick, lock, checkShae, shaeLogin, showShae, shaeStartCounting, shaeLogout, shaeReload
-
-    while True:
-        findShaeEvent.wait()
-        findShaeEvent.clear()
-        if time.time() - shaeStartCounting > 300:
-            with lock:
-                pag.click(shaeSafeClick)
-                pag.keyDown('up')
-                time.sleep(0.3)
-                pag.click(shaeSafeClick)
-                pag.keyUp('up')
-            pag.click(shaeReload)
-            shaeStartCounting = time.time()
-        crop = screenshot[sy1:sy2, sx1:sx2]
-        
-        results[0] = cv2.matchTemplate(shae[0], crop, method)
-
-        _, shaeFindValue[0], _, shaeLoc[0] = cv2.minMaxLoc(results[0])
-
-        #print("shae " + str(shaeFindValue))
-
-        counter = 0
-        if shaeFindValue[0] > 0.5:
-            counter += 1
-
-        if showShae is True:
-            cv2.imshow('s', crop)
-            cv2.waitKey(1)
-
-        if counter == 0:
-            continue
-        else:
-            px, py = shaeLoc[0]
-
-        print("shae found")
-        
-        checkShae = False
-        time.sleep(0.25)
-        pag.click(sx1 + px + 12, sy1 + py + 35)
-        for i in range(0, 6):
-            with lock:
-                pag.click(shaeSafeClick)
-                pag.press('e')
-            time.sleep(0.25 + random.uniform(0.25, 0.75))
-        time.sleep(6 + random.randrange(2))
-        pag.click(shaeLogout)  # logout
-        time.sleep(260 + random.randrange(20))
-        try:
-            pag.click(shaeLogin)  # login
-        except:
-            img = pag.screenshot()
-            cv2.imwrite('/home/erl/Desktop/error1.png', img)
-            print("exception shae")
-        checkShae = True
-        print("look for shae")
-        makeSSEvent.set()
-        shaeStartCounting = time.time()
-
-
 def wladthread():
     results = [0, 0]
     wladFindValue = [0, 0]
     wladLoc = [0, 0]
-    global findWladEvent, screenshot, wlad, wx1, wx2, wy1, wy2, method, wladSafeClick, lock, checkWlad, wladLogin, showWlad, wladStartCounting, wladLogout, wladReload
+    global findWladEvent, screenshot, wlad, wx1, wx2, wy1, wy2, method, wladSafeClick, lock, checkWlad, wladLogin, showWlad, wladStartCounting, wladLogout1, wladLogout2, wladReload
 
     while True:
         findWladEvent.wait()
@@ -278,7 +234,7 @@ def wladthread():
                 pag.keyDown('down')
                 time.sleep(0.3)
                 pag.keyUp('down')
-            pag.click(wladReload)
+                pag.click(wladReload)
             wladStartCounting = time.time()
         crop = screenshot[wy1:wy2, wx1:wx2]
         #print("checking wlad")
@@ -291,11 +247,11 @@ def wladthread():
 
         counter = 0
         bestresult = 0
-        if wladFindValue[0] > 0.6:
+        if wladFindValue[0] > 0.5:
             if wladFindValue[0] > bestresult:
                 bestresult = wladFindValue[0]
             counter += 1
-        if wladFindValue[1] > 0.6:
+        if wladFindValue[1] > 0.5:
             if wladFindValue[1] > bestresult:
                 bestresult = wladFindValue[1]
             counter += 1
@@ -313,13 +269,13 @@ def wladthread():
 
         print("wlad found")
         checkWlad = False
-        time.sleep(0.25)
-        pag.click(wx1 + px + 8, wy1 + py + 8)
-        for i in range(0, 6):
-            with lock:
-                pag.click(wladSafeClick)
-                pag.press('e')
-            time.sleep(0.25 + random.uniform(0.25, 0.75))
+        time.sleep(0.4)
+        with lock:
+            pag.click(wx1 + px + 8, wy1 + py + 15)
+        time.sleep(8)
+        with lock:
+            pag.click(wladSafeClick)
+            pag.press('f')
         ruch = bool(random.getrandbits(1))
         if ruch is True:
             time.sleep(2)
@@ -328,14 +284,18 @@ def wladthread():
                 pag.keyDown('down')
                 time.sleep(0.3)
                 pag.keyUp('down')
-        time.sleep(6 + random.randrange(2))
-        pag.click(wladLogout)  # logout
-        time.sleep(330 + random.randrange(20))
+        with lock:
+            pag.click(wladLogout1)  # logout
+        time.sleep(3 + random.randrange(4))
+        with lock:
+            pag.click(wladLogout2)  # logout
+        time.sleep(335 + random.randrange(10))
         try:
-            pag.click(wladLogin)  # login
+            with lock:
+                pag.click(wladLogin)  # login
         except:
             img = pag.screenshot()
-            cv2.imwrite('/home/erl/Desktop/error3.png', img)  # login
+            cv2.imwrite('/home/erl/Desktop/error1.png', img)
             print("exception wlad")
         checkWlad = True
         print("look for wlad")
@@ -343,46 +303,147 @@ def wladthread():
         wladStartCounting = time.time()
 
 
-ax1 = 1510
-ax2 = 1960
-ay1 = 320
-ay2 = 750
-aliasLogout = (2175, 768)
-aliasLogin = (1985, 450)
-aliasSafeClick = (2010, 160)
-aliasReload = (1590, 110)
+def shaethread():
+    results = [0]
+    shaeFindValue = [0]
+    shaeLoc = [0]
+    global findShaeEvent, screenshot, shae, sx1, sx2, sy1, sy2, method, shaeSafeClick, lock, checkShae, shaeLogin, showShae, shaeStartCounting, shaeLogout1, shaeLogout2, shaeReload
 
-rx1 = 2225
-rx2 = 2510
-ry1 = 245
-ry2 = 660
-razuLogout = (2865, 768)
-razuLogin = (2666, 450)
-razuSafeClick = (2600, 155)
-razuReload = (2280, 105)
+    while True:
+        findShaeEvent.wait()
+        findShaeEvent.clear()
+        if time.time() - shaeStartCounting > 300:
+            with lock:
+                pag.click(shaeSafeClick)
+                pag.keyDown('up')
+                time.sleep(0.3)
+                pag.click(shaeSafeClick)
+                pag.keyUp('up')
+                pag.click(shaeReload)
+            shaeStartCounting = time.time()
+        crop = screenshot[sy1:sy2, sx1:sx2]
 
-sx1 = 95
-sx2 = 520
-sy1 = 330
-sy2 = 830
-shaeLogout = (740, 845)
-shaeLogin = (540, 470)
-shaeSafeClick = (490, 240)
-shaeReload = (155, 175)
+        results[0] = cv2.matchTemplate(shae[0], crop, method)
 
-wx1 = 765
-wx2 = 1205
-wy1 = 325
-wy2 = 815
-wladLogout = (1430, 830)
-wladLogin = (1225, 455)
-wladSafeClick = (1100, 215)
-wladReload = (840, 145)
+        _, shaeFindValue[0], _, shaeLoc[0] = cv2.minMaxLoc(results[0])
+
+        #print("shae " + str(shaeFindValue))
+
+        counter = 0
+        if shaeFindValue[0] > 0.7:
+            counter += 1
+
+        if showShae is True:
+            cv2.imshow('s', crop)
+            cv2.waitKey(1)
+
+        if counter == 0:
+            continue
+        else:
+            px, py = shaeLoc[0]
+
+        print("shae found")
+
+        checkShae = False
+        time.sleep(0.4)
+        with lock:
+            pag.click(sx1 + px + 12, sy1 + py + 35)
+        time.sleep(8)
+        with lock:
+            pag.click(shaeSafeClick)
+            pag.press('f')
+        ruch = bool(random.getrandbits(1))
+        if ruch is True:
+            time.sleep(2)
+            with lock:
+                pag.click(shaeSafeClick)
+                pag.keyDown('up')
+                time.sleep(0.2)
+                pag.keyUp('up')
+        with lock:
+            pag.click(shaeLogout1)  # logout
+        time.sleep(3 + random.randrange(4))
+        with lock:
+            pag.click(shaeLogout2)  # logout
+        time.sleep(265 + random.randrange(10))
+        try:
+            with lock:
+                pag.click(shaeLogin)  # login
+        except:
+            img = pag.screenshot()
+            cv2.imwrite('/home/erl/Desktop/error4.png', img)
+            print("exception shae")
+        checkShae = True
+        print("look for shae")
+        makeSSEvent.set()
+        shaeStartCounting = time.time()
+
+
+''''# 2560x1440  alias/firefox/lewo
+ax1 = 1920 + 250
+ax2 = 1920 + 650
+ay1 = 600
+ay2 = 1000
+aliasLogout1 = (1920 + 80, 150)
+aliasLogout2 = (1920 + 150, 340)
+aliasLogin = (1920 + 85, 110)
+aliasSafeClick = (2600, 160)
+# 2560x1440  razu/chrome/prawo
+rx1 = 3550
+rx2 = 3860
+ry1 = 320
+ry2 = 670
+razuLogout1 = (3250, 150)
+razuLogout2 = (3350, 430)
+razuLogin = (3250, 450)
+razuSafeClick = (3850, 160)'''
+
+#1600x900
+
+ax1 = 1750
+ax2 = 2170
+ay1 = 300
+ay2 = 700
+aliasLogout1 = (1680, 120)
+aliasLogout2 = (1785, 305)
+aliasLogin = (1685, 80)
+aliasReload = (1750, 80)
+aliasSafeClick = (2055, 125)
+
+rx1 = 2530
+rx2 = 2810
+ry1 = 255
+ry2 = 535
+razuLogout1 = (2450, 150)
+razuLogout2 = (2550, 430)
+razuLogin = (2950, 465)
+razuReload = (2520, 110)
+razuSafeClick = (2820, 155)
+
+wx1 = 900
+wx2 = 1510
+wy1 = 270
+wy2 = 790
+wladLogout1 = (850, 125)
+wladLogout2 = (950, 250)
+wladLogin = (1350, 440)
+wladReload = (920, 85)
+wladSafeClick = (1220, 130)
+
+sx1 = 395
+sx2 = 725
+sy1 = 145
+sy2 = 685
+shaeLogout1 = (85, 100)
+shaeLogout2 = (190, 230)
+shaeLogin = (570, 420)
+shaeReload = (155, 55)
+shaeSafeClick = (510, 125)
 
 razuStartCounting = time.time()
 aliasStartCounting = time.time()
-shaeStartCounting = time.time()
 wladStartCounting = time.time()
+shaeStartCounting = time.time()
 
 alias = [cv2.imread('/home/erl/Desktop/Bot/1.png'), cv2.imread('/home/erl/Desktop/Bot/2.png'),
          cv2.imread('/home/erl/Desktop/Bot/3.png'), cv2.imread('/home/erl/Desktop/Bot/4.png'),
@@ -393,7 +454,6 @@ alias[1] = alias[1][0:18, 13:28]
 alias[2] = alias[2][1:22, 8:27]
 alias[3] = alias[3][1:19, 10:24]
 
-
 razu = [cv2.imread('/home/erl/Desktop/Bot/r.png'), cv2.imread('/home/erl/Desktop/Bot/e.png'),
         cv2.imread('/home/erl/Desktop/Bot/t.png')]
 
@@ -401,39 +461,35 @@ razu[0] = razu[0][7:26, 12:36]
 razu[1] = razu[1][5:25, 20:37]
 razu[2] = razu[2][3:22, 16:33]
 
-shae = [cv2.imread('/home/erl/Desktop/Bot/shae.png')]
-
-shae[0] = shae[0][7:37, 35:59]
-#cv2.imshow('e', shae[0])
-#cv2.waitKey(0)
-
 wlad = [cv2.imread('/home/erl/Desktop/Bot/wlad.png'), cv2.imread('/home/erl/Desktop/Bot/zakuty.png')]
 
 wlad[0] = wlad[0][20:51, 8:20]
 wlad[1] = wlad[1][25:58, 0:24]
 
+shae = [cv2.imread('/home/erl/Desktop/Bot/shae.png')]
 
+shae[0] = shae[0][7:37, 35:59]
 
 makeSSEvent = threading.Event()
 findAliasEvent = threading.Event()
 findRazuEvent = threading.Event()
-findShaeEvent = threading.Event()
 findWladEvent = threading.Event()
+findShaeEvent = threading.Event()
 
 lock = threading.Lock()
 
-showAlias = False
-showRazu = False
-showShae = False
-showWlad = False
+method = cv2.TM_CCOEFF_NORMED
+screenshot = 0
 
 checkAlias = True
 checkRazu = True
-checkShae = False
 checkWlad = True
+checkShae = True
 
-method = cv2.TM_CCOEFF_NORMED
-screenshot = 0
+showAlias = False
+showRazu = False
+showWlad = False
+showShae = False
 
 aliasThread = threading.Thread(target=aliasthread)
 aliasThread.start()
@@ -441,14 +497,14 @@ aliasThread.start()
 razuThread = threading.Thread(target=razuthread)
 razuThread.start()
 
-shaeThread = threading.Thread(target=shaethread)
-shaeThread.start()
-
 wladThread = threading.Thread(target=wladthread)
 wladThread.start()
 
+shaeThread = threading.Thread(target=shaethread)
+shaeThread.start()
+
 while True:
-    if checkAlias is False and checkRazu is False and checkShae is False and checkWlad is False:
+    if checkAlias is False and checkRazu is False and checkWlad is False and checkShae is False:
         makeSSEvent.wait()
         makeSSEvent.clear()
     screenshot = np.array(pag.screenshot())
@@ -458,8 +514,8 @@ while True:
         findAliasEvent.set()
     if checkRazu is True:
         findRazuEvent.set()
-    if checkShae is True:
-        findShaeEvent.set()
     if checkWlad is True:
         findWladEvent.set()
+    if checkShae is True:
+        findShaeEvent.set()
     time.sleep(1.5)
